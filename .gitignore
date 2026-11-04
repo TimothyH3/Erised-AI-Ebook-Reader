@@ -1,0 +1,46 @@
+# Dependency directories
+node_modules/
+package-lock.json
+
+# Environment secrets and private configuration
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# Local Cache & Storage
+user_cache/
+*.db
+*.sqlite
+*.sqlite3
+*.cache
+*.epub.cache
+*.pdf.cache
+user_embeddings/
+
+# Build artifacts & packaged extensions
+dist/
+build/
+*.zip
+*.crx
+*.xpi
+
+# Local Logs & Telemetry
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Scratch & development directories
+scratch/
+.gemini/
+.idea/
+.vscode/
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+desktop.ini
+

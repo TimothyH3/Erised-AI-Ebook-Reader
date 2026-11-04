@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="obsidian">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Erised AI &bull; Full Page Reader</title>
+  <script>
+    // Sidebar disabled; automatically route directly to the dedicated full-page reader
+    window.location.replace('reader.html');
+  </script>
+  <link rel="stylesheet" href="sidepanel.css">
+</head>
+<body class="sidepanel-body">
+  <!-- Header Bar -->
+  <header class="sp-header">
+    <div class="sp-brand">
+      <span class="sp-symbol">✦</span>
+      <span class="sp-title">Sanctuary Sidecar</span>
+    </div>
+    <div class="sp-actions">
+      <button id="btn-sp-reset-session" class="btn-sp-tool" title="Reset Gemini session, purge cached tokens, and re-authenticate active Google account">↻ Reset AI</button>
+      <button id="btn-sp-fullscreen" class="btn-sp-tool" title="Open Fullscreen Reader Tab">⤢ Fullscreen</button>
+    </div>
+  </header>
+
+  <!-- Navigation & Book Dropdown -->
+  <div class="sp-nav-bar">
+    <select id="sp-book-select" class="sp-select">
+      <!-- Populated via JS -->
+    </select>
+    <div class="sp-page-controls">
+      <button id="btn-sp-prev" class="sp-btn-nav">&larr;</button>
+      <span id="lbl-sp-page" class="sp-page-lbl">1 / 1</span>
+      <button id="btn-sp-next" class="sp-btn-nav">&rarr;</button>
+    </div>
+  </div>
+
+  <!-- Tabs: Plates vs Prose vs Sidecar Sync -->
+  <div class="sp-tabs">
+    <button class="sp-tab-btn active" data-tab="reading">Reading</button>
+    <button class="sp-tab-btn" data-tab="plates">Art Plate</button>
+    <button class="sp-tab-btn" data-tab="sidecar">Kindle/Web Sync</button>
+  </div>
+
+  <!-- Tab Content Area -->
+  <main class="sp-main">
+    
+    <!-- Tab 1: Reading Prose -->
+    <section class="sp-tab-pane active" id="pane-reading">
+      <div id="sp-prose-container" class="sp-prose-container">
+        <!-- Prose rendered here -->
+      </div>
+    </section>
+
+    <!-- Tab 2: Art Plate (Single Grand Plate with Dynamic Aspect Ratio) -->
+    <section class="sp-tab-pane" id="pane-plates">
+      <div class="sp-plate-card">
+        <div class="sp-plate-header">
+          <div class="sp-plate-header-left">
+            <span class="sp-plate-tag" id="sp-plate-tag">ILLUMINATED SCENE</span>
+            <span class="sp-ratio-badge" id="sp-ratio-badge">16:9</span>
+          </div>
+          <div class="sp-plate-header-right">
+            <button class="sp-btn-mini" id="btn-sp-regen-prompt" title="Ask Gemini to pick a different prominent moment from this page">New Prompt</button>
+            <button class="sp-btn-mini" id="btn-sp-regen-image" title="Re-render Image">↻</button>
+          </div>
+        </div>
+
+        <div class="sp-plate-frame" id="sp-plate-frame">
+          <img id="sp-plate-img" class="sp-plate-img" src="" alt="Illuminated Scene" style="display:none;" />
+          <div id="sp-plate-loader" class="sp-plate-loader">
+            <div class="sp-spinner"></div>
+            <span id="sp-loader-text">Analyzing page with Gemini...</span>
+            <span id="sp-loader-subtext" style="font-size: 9px; opacity: 0.7;">Autonomous scene & theme synthesis</span>
+          </div>
+          <!-- Title page card for Sidepanel -->
+          <div id="sp-title-page-card" class="sp-title-card" style="display:none;">
+            <div style="font-size: 24px; color: var(--gold-accent); margin-bottom: 8px;">✦</div>
+            <strong style="color: var(--gold-glow); font-size: 13px;">Dedicated Title Folio</strong>
+            <p style="font-size: 11px; color: var(--text-muted); margin-top: 6px; line-height: 1.4;">
+              Page 1 Frontispiece (Zero AI Calls). Flip to Page 2 to begin real-time Gemini illustration.
+            </p>
+          </div>
+        </div>
+
+        <div class="sp-caption-box" id="sp-caption-box">
+          <div id="sp-caption-moment" class="sp-caption-moment">Prominent Scene</div>
+          <div id="sp-caption-desc" class="sp-caption-desc">Gemini autonomous theme & composition</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Sidecar Web Sync (for Kindle Cloud Reader / Gutenberg) -->
+    <section class="sp-tab-pane" id="pane-sidecar">
+      <div class="sp-sidecar-box">
+        <h3 class="sp-sidecar-title">Sidecar Reading Companion</h3>
+        <p class="sp-sidecar-desc">
+          Reading on Kindle Cloud Reader or Project Gutenberg? Paste any passage or click "Capture Selected Text" to illustrate it headlessly in real time.
+        </p>
+        <button id="btn-capture-selection" class="btn-sp-capture">Capture Active Tab Selection</button>
+        <textarea id="txt-sidecar-passage" class="sp-textarea" placeholder="Paste literary excerpt here... (1,800 to 2,400 chars)"></textarea>
+        <button id="btn-illustrate-passage" class="btn-sp-illustrate">✦ Synthesize Passage Illumination</button>
+      </div>
+    </section>
+
+  </main>
+
+  <script type="module" src="sidepanel.js"></script>
+</body>
+</html>

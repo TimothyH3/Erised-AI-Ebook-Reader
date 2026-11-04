@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" width="960" height="540">
+  <defs>
+    <linearGradient id="demoBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0f1d"/>
+      <stop offset="50%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#020617"/>
+    </linearGradient>
+    <linearGradient id="goldGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#d97706"/>
+      <stop offset="50%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#fbbf24"/>
+    </linearGradient>
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000000" flood-opacity="0.7"/>
+    </filter>
+  </defs>
+
+  <rect width="960" height="540" fill="url(#demoBg)"/>
+
+  <!-- Window Frame Header -->
+  <rect x="20" y="20" width="920" height="500" rx="10" fill="#0b0f19" stroke="#d97706" stroke-width="1.2" filter="url(#cardShadow)"/>
+  
+  <rect x="20" y="20" width="920" height="42" rx="10" fill="#111827"/>
+  <circle cx="44" cy="41" r="5" fill="#ef4444"/>
+  <circle cx="60" cy="41" r="5" fill="#f59e0b"/>
+  <circle cx="76" cy="41" r="5" fill="#10b981"/>
+
+  <!-- Logo and Title -->
+  <text x="500" y="46" font-family="'Cinzel', Georgia, serif" font-size="15" font-weight="bold" fill="url(#goldGlow)" text-anchor="middle" letter-spacing="2">
+    ERISED AI &bull; FINE-ART LITERARY SANCTUARY
+  </text>
+
+  <!-- Left / Center Reading Column -->
+  <g transform="translate(60, 85)">
+    <rect width="520" height="410" rx="8" fill="#131b2e" stroke="#1f293d"/>
+    
+    <!-- Chapter Header -->
+    <text x="260" y="36" font-family="'Cinzel', serif" font-size="11" fill="#f59e0b" text-anchor="middle" letter-spacing="2">CHAPTER XII</text>
+    <text x="260" y="60" font-family="'Cinzel', Georgia, serif" font-size="19" font-weight="bold" fill="#fef08a" text-anchor="middle">The Mirror of Erised</text>
+    <line x1="210" y1="72" x2="310" y2="72" stroke="#d97706" stroke-width="1"/>
+
+    <!-- Prose text -->
+    <text x="35" y="105" font-family="Georgia, serif" font-size="13" fill="#94a3b8" line-height="1.8">
+      <tspan x="35" dy="0">Harry slipped out of bed and pulled on his silvery Invisibility Cloak.</tspan>
+      <tspan x="35" dy="22">He crept out of the dormitory, down the spiral stairs, and across the</tspan>
+      <tspan x="35" dy="22">shadowy Gryffindor common room. In the corridors, cold drafts whistled</tspan>
+      <tspan x="35" dy="22">through leaded panes, and moonlight filtered through the high arched</tspan>
+      <tspan x="35" dy="22">windows, casting silver beams across the stone floorboards.</tspan>
+    </text>
+
+    <!-- Highlighted Paragraph with Gold Glow -->
+    <rect x="25" y="215" width="470" height="95" rx="4" fill="rgba(245, 158, 11, 0.12)" stroke="#f59e0b" stroke-width="1.5"/>
+    <rect x="220" y="200" width="90" height="20" rx="10" fill="url(#goldGlow)"/>
+    <text x="265" y="214" font-family="system-ui, sans-serif" font-size="9" font-weight="bold" fill="#0b0f19" text-anchor="middle">New Prompt</text>
+    
+    <text x="35" y="235" font-family="Georgia, serif" font-size="13" fill="#f8fafc">
+      <tspan x="35" dy="0">It was a magnificent mirror, as high as the ceiling, with an ornate</tspan>
+      <tspan x="35" dy="22">golden frame, standing on two clawed feet. There was an inscription</tspan>
+      <tspan x="35" dy="22">carved around the top: Erised stra ehru oyt ube cafru oyt on wohsi.</tspan>
+    </text>
+
+    <text x="35" y="340" font-family="Georgia, serif" font-size="13" fill="#94a3b8">
+      <tspan x="35" dy="0">Harry stepped closer to the glass, his breath caught in his throat. The</tspan>
+      <tspan x="35" dy="22">moonlight illuminated the frame with soft silver reflections...</tspan>
+    </text>
+  </g>
+
+  <!-- Right Flank: In-Page Fine-Art Plate -->
+  <g transform="translate(605, 85)">
+    <rect width="295" height="410" rx="8" fill="#131b2e" stroke="#d97706" stroke-width="1.2"/>
+    
+    <!-- Plate Header -->
+    <rect width="295" height="32" rx="8" fill="#1e1b4b"/>
+    <text x="15" y="21" font-family="system-ui, sans-serif" font-size="10" font-weight="bold" fill="#f59e0b" letter-spacing="1">ILLUMINATED SCENE</text>
+    <rect x="245" y="8" width="36" height="16" rx="3" fill="#0f172a" stroke="#d97706"/>
+    <text x="263" y="20" font-family="system-ui, sans-serif" font-size="9" fill="#fbbf24" text-anchor="middle">3:4</text>
+
+    <!-- Art Frame -->
+    <rect x="15" y="44" width="265" height="300" rx="4" fill="#050811" stroke="#374151"/>
+    
+    <!-- Simulated Chiaroscuro Artwork Canvas -->
+    <radialGradient id="mirrorAura" cx="50%" cy="45%" r="60%">
+      <stop offset="0%" stop-color="#fef08a" stop-opacity="0.7"/>
+      <stop offset="40%" stop-color="#b45309" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#020617"/>
+    </radialGradient>
+    <rect x="18" y="47" width="259" height="294" fill="url(#mirrorAura)"/>
+    
+    <!-- Mirror Arch Outline -->
+    <path d="M 90,320 L 90,140 Q 90,85 147,85 Q 205,85 205,140 L 205,320 Z" fill="none" stroke="url(#goldGlow)" stroke-width="2.5"/>
+    <circle cx="147" cy="140" r="40" fill="none" stroke="#fef08a" stroke-width="1" stroke-dasharray="3,3"/>
+
+    <!-- Plate Caption & Excerpt -->
+    <rect x="15" y="352" width="265" height="50" rx="4" fill="#0b0f19" stroke="#1f2937"/>
+    <text x="25" y="369" font-family="system-ui, sans-serif" font-size="10" font-weight="bold" fill="#fbbf24">The Golden Mirror of Erised</text>
+    <text x="25" y="386" font-family="Georgia, serif" font-size="9" font-style="italic" fill="#94a3b8">"Erised stra ehru oyt ube cafru oyt on wohsi"</text>
+    <text x="25" y="396" font-family="system-ui, sans-serif" font-size="8" fill="#64748b">Imagen 3 &bull; Caravaggio Chiaroscuro Oil</text>
+  </g>
+</svg>
+

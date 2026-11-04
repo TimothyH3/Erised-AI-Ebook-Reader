@@ -1,0 +1,49 @@
+name: Package Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    name: Package Extension Distribution
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Dependencies & Run Tests
+        run: |
+          npm ci || npm install
+          npm test
+
+      - name: Package Extension ZIP
+        run: |
+          mkdir -p dist
+          zip -r dist/erised-ai-extension.zip \
+            manifest.json \
+            background.js \
+            reader.html reader.js reader.css \
+            popup.html popup.js popup.css \
+            offscreen.html offscreen.js \
+            sidepanel.html sidepanel.js sidepanel.css \
+            icons/ \
+            vendor/ \
+            modules/ \
+            src/ \
+            -x "*.git*" "*.DS_Store*" "*node_modules*" "*tests*" "*scratch*"
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/erised-ai-extension.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+

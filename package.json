@@ -1,15 +1,26 @@
 {
-  "name": "ai-ebook-reader",
+  "name": "erised-ai-ebook-reader",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "description": "Erised AI - Fine-art literary reader with contextual character recall, in-page dual-flank plate synthesis, and zero-developer-cost headless Gemini & Imagen 3.",
   "type": "module",
+  "main": "src/background.js",
+  "scripts": {
+    "test": "node scripts/run_all_tests.js",
+    "generate-icons": "node scripts/generate_icons.js"
+  },
+  "keywords": [
+    "ebook-reader",
+    "fine-art",
+    "gemini",
+    "imagen-3",
+    "epub",
+    "pdf",
+    "illuminated-manuscript",
+    "character-tracking",
+    "zero-cost-ai"
+  ],
+  "author": "TimothyH3",
+  "license": "MIT",
   "dependencies": {
     "jszip": "^3.10.2",
     "pdfjs-dist": "^6.4.299"
