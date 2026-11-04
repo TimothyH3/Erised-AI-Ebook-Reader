@@ -1,0 +1,52 @@
+{
+  "manifest_version": 3,
+  "name": "Erised AI",
+  "version": "1.0.0",
+  "description": "Erised AI - Illuminated fine-art literary reader with zero-developer-cost headless Gemini & Flux illustration synthesis.",
+  "icons": {
+    "16": "icons/Light_Logo.png",
+    "48": "icons/Light_Logo.png",
+    "128": "icons/Light_Logo.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Erised AI",
+    "default_icon": {
+      "16": "icons/Light_Logo.png",
+      "48": "icons/Light_Logo.png",
+      "128": "icons/Light_Logo.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "permissions": [
+    "cookies",
+    "storage",
+    "alarms",
+    "offscreen",
+    "scripting",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "https://gemini.google.com/*",
+    "https://*.google.com/*",
+    "https://*.googleapis.com/*",
+    "https://*.googleusercontent.com/*",
+    "https://image.pollinations.ai/*"
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "vendor/*",
+        "reader.html",
+        "icons/*"
+      ],
+      "matches": [
+        "https://*/*",
+        "http://*/*"
+      ]
+    }
+  ]
+}

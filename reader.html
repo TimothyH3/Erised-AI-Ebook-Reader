@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="obsidian">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Erised AI &bull; Fine-Art Literary Reader</title>
+  <link rel="icon" type="image/png" href="icons/Light_Logo.png">
+  <link rel="stylesheet" href="reader.css">
+  <script src="vendor/jszip.min.js"></script>
+</head>
+<body class="sanctuary-app">
+  <!-- Top Navigation Bar -->
+  <header class="sanctuary-header">
+    <div class="header-left">
+      <!-- Erised AI Brand Logo & Title -->
+      <div class="erised-brand" title="Erised AI - Fine-Art Literary Reader">
+        <img src="icons/Light_Logo.png" alt="Erised AI Logo" class="erised-logo-img" />
+        <span class="erised-brand-title">Erised AI</span>
+      </div>
+
+      <!-- Table of Contents Button -->
+      <button id="btn-toc" class="btn-tool btn-toc" title="Table of Contents (Jump to Chapter or Page)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+        <span class="tool-label">Contents</span>
+      </button>
+
+      <!-- Book Selector Dropdown & Remove Button -->
+      <div class="book-dropdown-wrap">
+        <select id="book-select" class="sanctuary-select" title="Switch Book">
+          <!-- Populated dynamically -->
+        </select>
+        <button id="btn-remove-book" class="btn-tool-mini btn-remove-book" title="Remove current book from library">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+        </button>
+      </div>
+
+      <!-- File Import Button -->
+      <label class="btn-tool btn-import" title="Import EPUB, PDF, TXT, or MD Book">
+        <input type="file" id="file-uploader" accept=".epub,.pdf,.txt,.md" style="display:none;" />
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        <span class="tool-label">Import Book</span>
+      </label>
+    </div>
+
+    <!-- Center Navigation -->
+    <div class="header-center">
+      <div class="nav-cluster">
+        <button id="btn-prev-page" class="nav-btn" title="Previous Page (Left Arrow)">
+          <span class="nav-arrow">&larr;</span> Prev
+        </button>
+
+        <div class="page-indicator-badge">
+          <span class="page-current" id="lbl-page-current">1</span>
+          <span class="page-sep">of</span>
+          <span class="page-total" id="lbl-page-total">1</span>
+        </div>
+
+        <button id="btn-next-page" class="nav-btn" title="Next Page (Right Arrow / Space)">
+          Next <span class="nav-arrow">&rarr;</span>
+        </button>
+      </div>
+
+      <div class="progress-bar-track">
+        <div class="progress-bar-fill" id="reading-progress-fill" style="width: 0%;"></div>
+      </div>
+    </div>
+
+    <!-- Right Controls -->
+    <div class="header-right">
+      <!-- Typography Size Controls -->
+      <div class="font-size-cluster">
+        <button id="btn-font-decrease" class="btn-tool-mini" title="Decrease Font Size">A-</button>
+        <span id="lbl-font-size" class="font-size-val">18px</span>
+        <button id="btn-font-increase" class="btn-tool-mini" title="Increase Font Size">A+</button>
+      </div>
+
+      <!-- Theme Switcher -->
+      <div class="theme-switcher">
+        <button class="theme-btn active" data-theme="obsidian" title="Obsidian Dark Theme">Dark</button>
+        <button class="theme-btn" data-theme="parchment" title="Warm Parchment Theme">Sepia</button>
+        <button class="theme-btn" data-theme="paper" title="Paper White Theme">Light</button>
+      </div>
+
+      <!-- AI Studio Drawer Toggle Button -->
+      <button id="btn-toggle-studio" class="btn-studio-toggle" title="Toggle AI Studio Drawer (Ctrl+S / Alt+S)">
+        <span class="studio-sparkle">✦</span>
+        <span class="studio-label">AI Studio</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Google Session Status Alert Banner (Shown when user is not signed in) -->
+  <div id="google-login-banner" class="google-login-banner" style="display: none;">
+    <div class="banner-content">
+      <span class="banner-icon">✦</span>
+      <div class="banner-text">
+        <strong>Zero-API-Key Mode Available:</strong> Please sign into your Google account at
+        <a href="https://gemini.google.com" target="_blank" class="banner-link">gemini.google.com</a>
+        to activate real-time headless Imagen 3 synthesis.
+      </div>
+      <div class="banner-actions">
+        <a href="https://gemini.google.com" target="_blank" class="banner-btn-primary">Sign In to Gemini</a>
+        <button id="btn-banner-recheck" class="banner-btn-primary" style="background:#2563eb;border-color:#3b82f6;cursor:pointer;">↻ Re-Check Session</button>
+        <button id="btn-dismiss-banner" class="banner-btn-secondary">Dismiss</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Desktop Illuminated Sanctuary Layout -->
+  <main class="sanctuary-stage" id="sanctuary-stage">
+    
+    <!-- PROSE READING SANCTUARY -->
+    <article class="prose-column" id="prose-column">
+      <div class="prose-card" id="prose-card">
+        <!-- Rendered Page HTML Content -->
+        <div id="prose-content-area" class="prose-content-area">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+  <!-- TOGGLEABLE AI STUDIO SIDEBAR DRAWER -->
+  <aside class="ai-studio-drawer" id="ai-studio-drawer">
+    <div class="drawer-header">
+      <div class="drawer-title-wrap">
+        <span class="drawer-sparkle">✦</span>
+        <h2 class="drawer-title">AI Studio & Architecture</h2>
+      </div>
+      <button id="btn-close-studio" class="btn-drawer-close" title="Close AI Studio (Ctrl+S / Alt+S)">✕</button>
+    </div>
+
+    <div class="drawer-scroll-body">
+      <!-- Engine & Connection Control -->
+      <section class="drawer-section">
+        <h3 class="section-title">Synthesis Engine</h3>
+        
+        <div class="engine-active-card" style="padding: 10px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-gold); border-radius: 6px; margin-bottom: 10px;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="font-size: 12px; font-weight: 700; color: var(--gold-accent);">Gemini 3.8 Image & Fastest Text Model</div>
+            <span class="section-badge" style="background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid #22c55e;">Zero-Key Active</span>
+          </div>
+          <div style="font-size: 10px; color: var(--text-muted); margin-top: 4px;">
+            Gemini 3.8 fine-art plates &bull; Fastest Gemini model for prompt synthesis & text analysis &bull; Zero-key session
+          </div>
+        </div>
+
+        <div class="session-control-row" style="display: flex; gap: 8px; align-items: stretch;">
+          <div class="session-status-badge" id="studio-session-status" style="flex: 1;">
+            <span class="dot-online"></span>
+            <span id="studio-session-text">Checking Google Session...</span>
+          </div>
+          <button id="btn-reset-session" class="btn-tool-mini" style="padding: 6px 10px; font-size: 11px; white-space: nowrap; border: 1px solid var(--border-gold);" title="Purge cached tokens & re-authenticate with active Google account (for account switch or sign-out)">
+            ↻ Reset Session
+          </button>
+        </div>
+      </section>
+
+      <!-- Art Style Selection (User-Configured) -->
+      <section class="drawer-section">
+        <div class="section-title-row">
+          <h3 class="section-title">Art Style Masterpresets</h3>
+          <span class="section-badge" id="lbl-active-style">Ethereal</span>
+        </div>
+        <p class="drawer-subtext" style="font-size: 10px; color: var(--text-muted); margin-top: -4px;">
+          The AI autonomously selects lighting, mood, color palette, and atmosphere based on the full page context.
+        </p>
+        <div class="style-cards-grid" id="style-cards-grid">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </section>
+
+      <!-- Plate Aspect Ratio Setting (User-Configured, Default 3:4) -->
+      <section class="drawer-section">
+        <div class="section-title-row">
+          <h3 class="section-title">Canvas Aspect Ratio</h3>
+          <span class="section-badge" id="lbl-active-aspect-ratio">3:4</span>
+        </div>
+        <p class="drawer-subtext" style="font-size: 10px; color: var(--text-muted); margin-top: -4px;">
+          Canvas framing for newly generated book illustrations. Default is 3:4 portrait folio.
+        </p>
+        <div class="aspect-ratio-grid" id="aspect-ratio-grid">
+          <button class="ratio-btn active" data-ratio="3:4" title="Portrait Folio (3:4) - Default">
+            <span class="ratio-val">3:4</span>
+            <span class="ratio-label">Portrait</span>
+          </button>
+          <button class="ratio-btn" data-ratio="4:3" title="Classic Book Plate (4:3)">
+            <span class="ratio-val">4:3</span>
+            <span class="ratio-label">Standard</span>
+          </button>
+          <button class="ratio-btn" data-ratio="16:9" title="Cinematic Landscape (16:9)">
+            <span class="ratio-val">16:9</span>
+            <span class="ratio-label">Wide</span>
+          </button>
+          <button class="ratio-btn" data-ratio="1:1" title="Square Vignette (1:1)">
+            <span class="ratio-val">1:1</span>
+            <span class="ratio-label">Square</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Character Codex & Dramatis Personae (Zero Character Names in Prompts) -->
+      <section class="drawer-section" id="section-characters">
+        <div class="section-title-row">
+          <h3 class="section-title">Character Codex</h3>
+          <span class="section-badge" id="lbl-character-count">0 Tracked</span>
+        </div>
+        <p class="drawer-subtext" style="font-size: 10px; color: var(--text-muted); margin-top: -4px;">
+          Whole-book character dossiers. Physical visual descriptions are substituted for character names in prompts.
+        </p>
+        <div class="character-cards-list" id="character-cards-list">
+          <!-- Populated dynamically via JS -->
+        </div>
+        <div style="margin-top: 8px; display: flex; gap: 6px; flex-wrap: wrap;">
+          <button id="btn-scan-characters" class="btn-secondary-action" style="flex: 1; min-width: 130px; padding: 6px 10px; font-size: 11px; background: rgba(217, 119, 6, 0.2); border: 1px solid var(--border-gold); color: var(--gold-accent); border-radius: 4px; cursor: pointer;">Scan Characters</button>
+          <button id="btn-export-txt" class="btn-secondary-action" style="padding: 6px 10px; font-size: 11px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-color); color: var(--text-muted); border-radius: 4px; cursor: pointer;" title="Export entire book as a .TXT file">Export .TXT</button>
+          <button id="btn-add-character-toggle" class="btn-secondary-action" style="padding: 6px 10px; font-size: 11px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-color); color: var(--text-muted); border-radius: 4px; cursor: pointer;">+ Add</button>
+        </div>
+        <div id="character-scan-status" style="display: none; font-size: 10px; color: var(--gold-accent); margin-top: 6px; font-style: italic;">
+          Analyzing book for named characters...
+        </div>
+
+        <!-- Add/Edit Character Form (Collapsible) -->
+        <div id="character-edit-form" style="display: none; margin-top: 10px; padding: 10px; background: rgba(0,0,0,0.4); border: 1px solid var(--border-gold); border-radius: 6px;">
+          <h4 style="margin: 0 0 8px 0; font-size: 11px; color: var(--gold-accent);" id="char-form-title">Add Character Visual Dossier</h4>
+          <input type="hidden" id="input-char-id" value="" />
+          <input type="text" id="input-char-name" placeholder="Character Name (e.g. Victor Frankenstein)" style="width: 100%; box-sizing: border-box; padding: 6px 8px; font-size: 11px; margin-bottom: 6px; background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border-color); border-radius: 4px;" />
+          <input type="text" id="input-char-aliases" placeholder="Aliases (comma-separated, e.g. Victor, Frankenstein)" style="width: 100%; box-sizing: border-box; padding: 6px 8px; font-size: 11px; margin-bottom: 6px; background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border-color); border-radius: 4px;" />
+          <textarea id="input-char-desc" rows="3" placeholder="Physical Visual Description (age, hair, eyes, face, build, period clothing - NEVER use character name here)" style="width: 100%; box-sizing: border-box; padding: 6px 8px; font-size: 11px; margin-bottom: 8px; background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border-color); border-radius: 4px; font-family: inherit;"></textarea>
+          <div style="display: flex; gap: 6px; justify-content: flex-end;">
+            <button id="btn-char-cancel" style="padding: 4px 10px; font-size: 11px; background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); border-radius: 4px; cursor: pointer;">Cancel</button>
+            <button id="btn-char-save" style="padding: 4px 12px; font-size: 11px; background: var(--gold-accent); border: none; color: #000; font-weight: bold; border-radius: 4px; cursor: pointer;">Save Dossier</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Live AI Prompt Breakdown & Editor -->
+      <section class="drawer-section">
+        <div class="section-title-row">
+          <h3 class="section-title">Live Prompt Breakdown</h3>
+          <span class="section-badge" id="lbl-prompt-page-badge">Page 1</span>
+        </div>
+        <p class="drawer-subtext" id="lbl-prompt-subtext" style="font-size: 10px; color: var(--text-muted); margin-top: -6px;">
+          Fastest Gemini model analyzes the full page, picks a prominent moment, and autonomously crafts the theme & aspect ratio.
+        </p>
+
+        <!-- Moment & Theme Summary Card -->
+        <div class="synthesis-summary-card" id="synthesis-summary-card" style="margin-bottom: 12px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-gold); border-radius: 6px; padding: 10px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="font-size: 12px; font-weight: 700; color: var(--gold-accent);" id="studio-moment-title">Prominent Scene</div>
+            <span class="section-badge" id="studio-moment-ratio" style="font-size: 10px; padding: 2px 6px;">16:9</span>
+          </div>
+          <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px; line-height: 1.4;" id="studio-moment-desc">Moment description will appear here after page analysis.</div>
+          <div style="font-size: 10px; color: var(--gold-accent); font-style: italic; margin-top: 5px; padding: 4px 6px; background: rgba(245, 158, 11, 0.08); border-left: 2px solid var(--gold-accent); border-radius: 0 4px 4px 0;" id="studio-moment-excerpt">Illustrated passage will appear here.</div>
+          <div style="display: flex; gap: 8px; margin-top: 6px; font-size: 10px; color: var(--gold-glow); flex-wrap: wrap;">
+            <span id="studio-moment-optics">Optics: 85mm Portrait</span>
+            <span>&bull;</span>
+            <span id="studio-moment-theme">Theme: Chiaroscuro key lighting</span>
+          </div>
+        </div>
+
+        <div class="prompt-box-group">
+          <div class="prompt-header-row">
+            <span class="prompt-tag">Generated Gemini 3.8 Prompt</span>
+            <button class="btn-copy-prompt" id="btn-copy-prompt" title="Copy prompt">Copy</button>
+          </div>
+          <textarea id="txt-prompt-plate" class="prompt-textarea" rows="5"></textarea>
+          <div class="prompt-actions-row">
+            <button class="btn-resynth-prompt" id="btn-studio-regen-prompt" title="Ask Gemini to pick an alternative moment from this page">Re-craft Prompt</button>
+            <button class="btn-resynth" id="btn-studio-generate">↻ Generate Plate</button>
+          </div>
+        </div>
+
+        <div class="prompt-box-group" style="margin-top: 14px;">
+          <span class="prompt-tag">Universal Negative Prompt</span>
+          <textarea id="txt-prompt-negative" class="prompt-textarea" rows="2" readonly></textarea>
+        </div>
+      </section>
+
+      <!-- Local Memory Cache Inspector -->
+      <section class="drawer-section">
+        <h3 class="section-title">Local Memory Cache</h3>
+        <div class="cache-stats-row">
+          <div class="cache-stat-item">
+            <span class="cache-stat-num" id="stat-cached-count">0</span>
+            <span class="cache-stat-lbl">Cached Plates</span>
+          </div>
+          <div class="cache-stat-item">
+            <span class="cache-stat-num" id="stat-latency">0ms</span>
+            <span class="cache-stat-lbl">Retrieval Latency</span>
+          </div>
+        </div>
+        <button id="btn-clear-cache" class="btn-clear-cache">Clear Cached Plates for Current Book</button>
+      </section>
+    </div>
+  </aside>
+
+  <!-- Floating Edge Tab to open AI Studio when collapsed -->
+  <button id="btn-floating-studio" class="floating-studio-tab" title="Open AI Studio (Ctrl+S / Alt+S)">
+    <span class="floating-sparkle">✦</span>
+    <span class="floating-text">AI STUDIO</span>
+  </button>
+
+  <!-- Fullscreen Plate Zoom Lightbox Modal (Enlarged View with Inspect Prompt) -->
+  <div id="lightbox-modal" class="lightbox-modal" style="display: none;">
+    <div class="lightbox-backdrop" id="lightbox-backdrop"></div>
+    <div class="lightbox-content">
+      <button class="btn-lightbox-close" id="btn-lightbox-close" title="Close Lightbox (Esc)">✕</button>
+      <img id="lightbox-img" class="lightbox-img" src="" alt="Enlarged Art Plate" />
+      
+      <div class="lightbox-footer">
+        <div class="lightbox-info">
+          <div class="lightbox-caption" id="lightbox-caption">Dramatic Scene</div>
+          <div class="lightbox-excerpt" id="lightbox-excerpt" style="font-size: 11px; color: var(--gold-glow); font-style: italic; margin-top: 4px;"></div>
+        </div>
+        
+        <div class="lightbox-actions">
+          <button class="btn-lightbox-action btn-lightbox-inspect" id="btn-lightbox-inspect" title="Inspect & Edit Prompt in AI Studio">
+            Inspect Prompt
+          </button>
+          <button class="btn-lightbox-action" id="btn-lightbox-copy" title="Copy Prompt Text">
+            Copy Prompt
+          </button>
+          <a class="btn-lightbox-action" id="link-lightbox-download" download="illuminated-plate.png" title="Download Illustration">
+            Download
+          </a>
+        </div>
+      </div>
+
+      <!-- Expandable Prompt Breakdown Box in Lightbox -->
+      <div class="lightbox-prompt-box" id="lightbox-prompt-box" style="display: none;">
+        <div class="lightbox-prompt-header">
+          <span class="lightbox-prompt-title">Active Imagen 3 Prompt</span>
+          <span class="lightbox-prompt-flank" id="lightbox-prompt-flank">Right Flank</span>
+        </div>
+        <div class="lightbox-prompt-text" id="lightbox-prompt-text"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Selection Toolbar for User-Initiated Highlighting & Prompt Creation -->
+  <div id="floating-selection-toolbar" class="floating-selection-toolbar" style="display: none;">
+    <button id="btn-create-selection-prompt" class="btn-selection-prompt" title="Generate Image from Highlighted Text">
+      <span class="selection-sparkle">✦</span>
+      <span id="lbl-selection-prompt-text">Generate Image from Selection</span>
+      <span id="lbl-selection-char-count" class="selection-char-count">0/400</span>
+    </button>
+  </div>
+
+  <!-- Table of Contents Modal -->
+  <div id="toc-modal" class="toc-modal" style="display: none;">
+    <div id="toc-backdrop" class="toc-backdrop"></div>
+    <div class="toc-dialog">
+      <div class="toc-header">
+        <div class="toc-title-group">
+          <div class="toc-title-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg></div>
+          <div>
+            <h3 class="toc-title">Table of Contents</h3>
+            <span class="toc-book-title" id="toc-book-title">Book Title</span>
+          </div>
+        </div>
+        <button id="btn-toc-close" class="btn-toc-close" title="Close (Esc)">&times;</button>
+      </div>
+
+      <!-- Direct Page Jumper -->
+      <div class="toc-page-jump-row">
+        <label for="toc-page-input" class="toc-jump-label">Jump to Page:</label>
+        <div class="toc-input-wrap">
+          <input type="number" id="toc-page-input" class="toc-page-input" min="1" max="1" placeholder="#" />
+          <span class="toc-page-limit" id="toc-page-limit">of 1</span>
+        </div>
+        <button id="btn-toc-jump" class="btn-toc-jump">Jump &rarr;</button>
+      </div>
+
+      <!-- Chapters List -->
+      <div class="toc-chapters-wrap">
+        <div class="toc-section-heading">Chapters &amp; Folios</div>
+        <div id="toc-chapters-list" class="toc-chapters-list">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="reader.js" type="module"></script>
+</body>
+</html>
+

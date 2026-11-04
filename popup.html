@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Erised AI &bull; Literary Reader</title>
+  <link rel="stylesheet" href="popup.css">
+  <link rel="icon" type="image/png" href="icons/Light_Logo.png">
+</head>
+<body class="popup-body">
+  <div class="popup-container">
+    <!-- Header -->
+    <header class="popup-header">
+      <div class="logo-group">
+        <img src="icons/Light_Logo.png" alt="Erised AI" class="popup-brand-logo" />
+        <div class="title-wrap">
+          <h1 class="brand-title">Erised AI</h1>
+          <span class="brand-subtitle">Fine-Art Literary Reader</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Google Session Status Card -->
+    <div class="session-card" id="session-card">
+      <div class="session-indicator-row">
+        <span class="status-dot checking" id="status-dot"></span>
+        <span class="status-text" id="status-text">Checking Google Session...</span>
+        <button class="btn-reset-mini" id="btn-popup-reset-session" title="Reset Gemini session, purge cached tokens, and re-authenticate active Google account">↻ Reset</button>
+      </div>
+      <p class="session-desc" id="session-desc">
+        Connecting to active Google One / consumer session at gemini.google.com.
+      </p>
+      <div class="session-action-wrap" id="session-action-wrap" style="display: none;">
+        <a href="https://gemini.google.com" target="_blank" class="btn-google-login">
+          Sign In to Gemini (Zero-Key) &rarr;
+        </a>
+      </div>
+    </div>
+
+    <!-- Active Book Quick Info -->
+    <div class="active-book-card" id="active-book-card">
+      <div class="book-mini-cover" id="mini-cover">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+      </div>
+      <div class="book-mini-meta">
+        <div class="mini-title" id="mini-title">Harry Potter and the Philosopher's Stone</div>
+        <div class="mini-progress" id="mini-progress">Page 2 &bull; Chapter I</div>
+      </div>
+    </div>
+
+    <!-- Main Navigation Action -->
+    <div class="action-buttons-group">
+      <button class="btn-primary" id="btn-open-fullscreen">
+        <span class="btn-text">Open Erised AI Reader</span>
+      </button>
+    </div>
+
+    <!-- Footer -->
+    <footer class="popup-footer">
+      <span>Erised AI Fine-Art Sanctuary</span>
+      <span class="engine-badge" id="engine-badge">Imagen 3</span>
+    </footer>
+  </div>
+
+  <script src="popup.js" type="module"></script>
+</body>
+</html>
